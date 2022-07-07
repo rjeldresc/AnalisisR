@@ -1,0 +1,83 @@
+#Temperaturas
+temp<- rnorm(n = 100, mean = 21, sd = 8)
+temp
+
+#Se obtiene el numero total de temperaturas
+largo_temp<-length(temp)
+
+#Días de la semana. son 700
+dia<-rep(c("L","M","W","J","V","S","D"), largo_temp )
+
+#Para separar en primer tercio, segundo tercio, 3r tercio
+tercio <- as.integer(largo_temp/3)
+
+#version alternativa est<- rep(c("E1","E2","E3","E3"),each=tercio,length=100)
+est<-rep(c("E1","E2","E3"), c(tercio,tercio,tercio+1))
+
+#Genere un vector llamado lluvia del mismo largo que temp, que sea TRUE en las posiciones en que temp sea menor que 20, y FALSE en caso contrario.
+lluvia<-temp<20
+lluvia
+
+#Creacion de data.frame
+precipitaciones<-data.frame(Dia=dia, Temperatura = temp,  Llueve=lluvia, Estacion=est)
+precipitaciones["Dia.L"]<-as.factor(as.numeric(precipitaciones$Dia=="L"))
+precipitaciones["Dia.M"]<-as.factor(as.numeric(precipitaciones$Dia=="M"))
+precipitaciones["Dia.W"]<-as.factor(as.numeric(precipitaciones$Dia=="w"))
+precipitaciones["Dia.J"]<-as.factor(as.numeric(precipitaciones$Dia=="J"))
+precipitaciones["Dia.V"]<-as.factor(as.numeric(precipitaciones$Dia=="V"))
+precipitaciones["Dia.S"]<-as.factor(as.numeric(precipitaciones$Dia=="S"))
+precipitaciones["Dia.D"]<-as.factor(as.numeric(precipitaciones$Dia=="D"))
+precipitaciones["Est.1"]<-as.factor(as.numeric(precipitaciones$Estacion=="E1"))
+precipitaciones["Est.2"]<-as.factor(as.numeric(precipitaciones$Estacion=="E2"))
+precipitaciones["Est.3"]<-as.factor(as.numeric(precipitaciones$Estacion=="E3"))
+precipitaciones
+
+# ¿Cuál es la temperatura promedio cuando llovió?
+llueve<-temp[lluvia == TRUE]
+promedio<-mean(llueve)
+promedio
+
+# ¿Cuál es la temperatura promedio cuando NO llovió?
+no_llueve<-temp[lluvia == FALSE]
+promedio<-mean(no_llueve)
+promedio
+
+#Lo mismo pero sólo de los registros de E1
+
+# ¿Cuál es la temperatura promedio cuando llovió?
+llueve <-temp [lluvia == TRUE & est == "E1"]
+promedio<-mean(llueve)
+promedio
+
+# ¿Cuál es la temperatura promedio cuando NO llovió?
+no_llueve <-temp [lluvia == FALSE & est == "E1"]
+promedio<-mean(no_llueve)
+promedio
+
+# ¿Qué día era cuando se alcanzó la mínima temperatura?
+dia<-precipitaciones$Dia[which.min(precipitaciones$Temperatura)]
+temperatura<-precipitaciones$Temperatura[which.min(precipitaciones$Temperatura)]
+dia
+temperatura
+
+#¿y la ,máxima?
+dia<-precipitaciones$Dia[which.max(precipitaciones$Temperatura)]
+temperatura<-precipitaciones$Temperatura[which.max(precipitaciones$Temperatura)]
+dia
+temperatura
+
+#Podemos eliminar los registros de posición 3 y 4
+precipitaciones <- precipitaciones[-c(3, 4),]
+
+# Si queremos ver esa misma fila de la tabla precipitaciones
+precipitaciones[3,]
+precipitaciones[4,]
+
+# Se sabe que la Estación E3 falla todos los días domingo, por lo que se quiere eliminar tales registros de la tabla. Elimínelos!
+precipitaciones <- precipitaciones[!(precipitaciones$Dia=="D" & precipitaciones$Estacion == "E3"),]
+
+dim(precipitaciones)
+
+
+
+save.image("D:/Taller 1.RData")
